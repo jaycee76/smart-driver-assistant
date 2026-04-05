@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { RouteResult, GeocodeFeature, TollEstimate } from '~/types'
+import { useFuelStore } from '~/stores/fuel'
+
+const fuelStore = useFuelStore()
+const noVehicleWarning = ref(false)
 
 const originQuery = ref('')
 const destQuery = ref('')
@@ -62,6 +66,12 @@ function selectPlace(feature: GeocodeFeature, target: 'origin' | 'dest') {
 
 async function planRoute() {
   if (!origin.value || !destination.value) return
+
+  if (fuelStore.vehicles.length === 0) {
+    noVehicleWarning.value = true
+    return
+  }
+  noVehicleWarning.value = false
 
   if (!avoidTolls.value && !tollEstimate.value) {
     tollHighlight.value = true
@@ -181,6 +191,11 @@ async function planRoute() {
       <p v-if="routeError" class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl px-3 py-2">
         {{ routeError }}
       </p>
+
+      <div v-if="noVehicleWarning" class="text-sm bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 text-amber-800 dark:text-amber-300 rounded-xl px-4 py-3">
+        You need to add a vehicle before planning a route.
+        <NuxtLink to="/fuel-log" class="font-semibold underline ml-1 hover:text-amber-900 dark:hover:text-amber-200">Add a vehicle</NuxtLink>
+      </div>
 
 
       <TripCostSummary
