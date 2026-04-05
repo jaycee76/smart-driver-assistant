@@ -81,12 +81,12 @@ watchEffect(() => {
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
-        class="flex flex-col items-center justify-center flex-1 py-2 text-xs text-surface-300 hover:text-white transition-colors"
+        class="flex flex-col items-center justify-center flex-1 py-2 text-xs text-surface-300 hover:text-white transition-colors min-w-0 overflow-hidden"
         active-class="text-primary-400"
         exact-active-class="text-primary-400"
       >
         <span class="text-lg">{{ item.icon }}</span>
-        <span>{{ item.label }}</span>
+        <span class="truncate w-full text-center">{{ item.label }}</span>
       </NuxtLink>
     </nav>
   </div>
