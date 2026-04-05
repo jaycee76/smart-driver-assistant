@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
+import tollsJson from '../../public/data/tolls.json'
 
 interface TollEntry {
   entryPointId: number
@@ -35,14 +34,10 @@ interface TollData {
   entries: TollEntry[]
 }
 
-let _cache: TollData | null = null
+const _data = tollsJson as unknown as TollData
 
 function loadTollData(): TollData {
-  if (_cache) return _cache
-  const filePath = resolve(process.cwd(), 'public/data/tolls.json')
-  const raw = readFileSync(filePath, 'utf-8')
-  _cache = JSON.parse(raw) as TollData
-  return _cache
+  return _data
 }
 
 export function getTollPoints(): TollPoint[] {

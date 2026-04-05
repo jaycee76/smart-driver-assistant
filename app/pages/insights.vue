@@ -41,7 +41,6 @@ async function analyzeData() {
 
     <!-- No vehicle state -->
     <div v-if="!activeVehicle" class="text-center py-16">
-      <p class="text-5xl mb-4">🚗</p>
       <h2 class="text-lg font-semibold mb-2">No Vehicle Added</h2>
       <p class="text-gray-400 text-sm mb-6">Add a vehicle first to get personalized fuel insights.</p>
       <NuxtLink to="/" class="bg-primary-600 text-white font-semibold px-6 py-3 rounded-xl">
