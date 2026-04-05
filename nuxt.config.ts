@@ -25,9 +25,9 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'currency', content: 'PHP' },
-        { name: 'description', content: 'Smart Driver Assistant for Filipino drivers' },
+        { name: 'description', content: 'Litro.ph' },
       ],
-      title: 'Smart Driver Assistant',
+      title: 'Litro.ph',
       script: [
         {
           // Runs synchronously before paint — applies dark class from persisted settings

@@ -28,7 +28,12 @@ watchEffect(() => {
   <div class="min-h-screen bg-white dark:bg-surface-950 text-gray-900 dark:text-gray-100 flex">
     <!-- Sidebar (desktop) -->
     <aside class="hidden md:flex flex-col w-60 min-h-screen bg-surface-900 text-white p-4 gap-2 fixed top-0 left-0">
-      <div class="text-xl font-bold mb-6 px-2">Smart Driver Assistant</div>
+      <div class="flex items-center gap-2 mb-6 px-2">
+        <div class="w-8 h-8 rounded-lg overflow-hidden bg-white p-0.5 shrink-0">
+          <img src="/images/litro-logo.png" alt="Litro.ph" class="w-full h-full object-contain" />
+        </div>
+        <span class="text-xl font-bold">Litro.ph</span>
+      </div>
       <nav class="flex flex-col gap-1 flex-1">
         <NuxtLink
           v-for="item in navItems"
@@ -55,7 +60,12 @@ watchEffect(() => {
     <main class="flex-1 md:ml-60 pb-20 md:pb-0">
       <!-- Mobile top bar -->
       <div class="md:hidden flex items-center justify-between px-4 py-3 bg-surface-900 text-white">
-        <span class="text-sm font-bold">Smart Driver Assistant</span>
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-md overflow-hidden bg-white p-0.5 shrink-0">
+            <img src="/images/litro-logo.png" alt="Litro.ph" class="w-full h-full object-contain" />
+          </div>
+          <span class="text-sm font-bold">Litro.ph</span>
+        </div>
         <label class="flex items-center gap-2 cursor-pointer select-none">
           <span class="text-xs text-surface-300">{{ settings.darkMode ? '🌙' : '☀️' }}</span>
           <button

@@ -38,9 +38,8 @@ const avgEfficiency = computed(() =>
 
     <!-- Empty state -->
     <div v-if="fuelStore.vehicles.length === 0" class="text-center py-16">
-      <img src="/images/smart-driver-assistant-logo.jpg" alt="Smart Driver Assistant" class="w-24 h-24 object-contain mx-auto mb-4 rounded-2xl" />
-      <h2 class="text-xl font-semibold mb-2">Welcome to Smart Driver Assistant</h2>
-      <p class="text-gray-400 text-sm mb-6">Add your vehicle to start tracking fuel costs.</p>
+      <h2 class="text-xl font-semibold mb-2">Welcome to Litro.ph</h2>
+      <p class="text-gray-400 text-sm mb-6">Add your vehicle to start tracking fuel costs and usage.</p>
       <button
         class="bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
         @click="showAddVehicle = true"
