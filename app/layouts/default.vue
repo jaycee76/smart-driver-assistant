@@ -57,7 +57,7 @@ watchEffect(() => {
     </aside>
 
     <!-- Main content -->
-    <main class="flex-1 md:ml-60 pb-20 md:pb-0">
+    <main class="flex-1 md:ml-60 min-h-screen flex flex-col pb-20 md:pb-0">
       <!-- Mobile top bar -->
       <div class="md:hidden flex items-center justify-between px-4 py-3 bg-surface-900 text-white">
         <div class="flex items-center gap-2">
@@ -82,7 +82,23 @@ watchEffect(() => {
           </button>
         </label>
       </div>
-      <slot />
+      <div class="flex-1">
+        <slot />
+      </div>
+
+      <footer class="px-4 py-4 md:px-8 text-center border-t border-gray-200 dark:border-surface-800">
+        <p class="text-sm text-gray-500 dark:text-surface-300">
+          A project by:
+          <a
+            href="https://jcajasmin.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-medium text-primary-600 dark:text-primary-400 hover:underline ml-1"
+          >
+            John Christopher Jasmin
+          </a>
+        </p>
+      </footer>
     </main>
 
     <!-- Bottom nav (mobile) -->
