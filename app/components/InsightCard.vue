@@ -33,10 +33,9 @@ onBeforeUnmount(() => {
 <template>
   <div class="bg-white dark:bg-surface-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-surface-700">
     <div class="flex items-center gap-2 mb-4">
-      <span class="text-xl">💡</span>
-      <h3 class="font-semibold">AI Fuel Insight</h3>
+      <h3 class="font-semibold">AI Driving Insight</h3>
       <span class="text-xs bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300 px-2 py-0.5 rounded-full ml-1">
-        Gemini
+        Gemma AI
       </span>
     </div>
     <div v-if="isLoading" class="space-y-2 animate-pulse">
