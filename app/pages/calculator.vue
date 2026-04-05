@@ -91,10 +91,10 @@ const showResults = computed(() => distanceKm.value > 0 && pricePerLiter.value >
     <!-- Results -->
     <div v-if="showResults" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
-        <StatCard label="Liters Needed" :value="`${result.litersNeeded.toFixed(2)}L`" icon="⛽" />
-        <StatCard label="Trip Cost" :value="settings.formatPeso(result.totalCost)" icon="💰" />
-        <StatCard label="Cost per km" :value="`₱${result.costPerKm.toFixed(2)}`" icon="📏" />
-        <StatCard label="Full Tank Cost" :value="settings.formatPeso(fullTankCost)" icon="🛢️" />
+        <StatCard label="Liters Needed" :value="`${result.litersNeeded.toFixed(2)}L`" icon="" />
+        <StatCard label="Trip Cost" :value="settings.formatPeso(result.totalCost)" icon="" />
+        <StatCard label="Cost per km" :value="`₱${result.costPerKm.toFixed(2)}`" icon="" />
+        <StatCard label="Full Tank Cost" :value="settings.formatPeso(fullTankCost)" icon="" />
       </div>
       <div
         v-if="result.monthlyCost !== undefined"
