@@ -1,0 +1,17 @@
+[
+  { "name": "Toyota Vios", "brand": "Toyota", "model": "Vios", "type": "car", "fuelType": "Ron95", "efficiency": 14, "tankCapacity": 42 },
+  { "name": "Toyota Fortuner", "brand": "Toyota", "model": "Fortuner", "type": "car", "fuelType": "Diesel", "efficiency": 10, "tankCapacity": 80 },
+  { "name": "Toyota Hi-Ace", "brand": "Toyota", "model": "Hi-Ace", "type": "van", "fuelType": "Diesel", "efficiency": 10, "tankCapacity": 70 },
+  { "name": "Mitsubishi Xpander", "brand": "Mitsubishi", "model": "Xpander", "type": "van", "fuelType": "Ron95", "efficiency": 13, "tankCapacity": 45 },
+  { "name": "Mitsubishi Montero Sport", "brand": "Mitsubishi", "model": "Montero Sport", "type": "car", "fuelType": "Diesel", "efficiency": 11, "tankCapacity": 70 },
+  { "name": "Honda Beat", "brand": "Honda", "model": "Beat", "type": "motorcycle", "fuelType": "Ron95", "efficiency": 50, "tankCapacity": 3.7 },
+  { "name": "Honda City", "brand": "Honda", "model": "City", "type": "car", "fuelType": "Ron95", "efficiency": 15, "tankCapacity": 40 },
+  { "name": "Suzuki Carry", "brand": "Suzuki", "model": "Carry", "type": "truck", "fuelType": "Diesel", "efficiency": 12, "tankCapacity": 40 },
+  { "name": "Ford Ranger", "brand": "Ford", "model": "Ranger", "type": "truck", "fuelType": "Diesel", "efficiency": 11, "tankCapacity": 80 },
+  { "name": "Hyundai Tucson", "brand": "Hyundai", "model": "Tucson", "type": "car", "fuelType": "Ron95", "efficiency": 12, "tankCapacity": 54 },
+  { "name": "Kia Picanto", "brand": "Kia", "model": "Picanto", "type": "car", "fuelType": "Ron95", "efficiency": 18, "tankCapacity": 35 },
+  { "name": "Geely Coolray", "brand": "Geely", "model": "Coolray", "type": "car", "fuelType": "Ron95", "efficiency": 14, "tankCapacity": 45 },
+  { "name": "Suzuki Ertiga", "brand": "Suzuki", "model": "Ertiga", "type": "van", "fuelType": "Ron95", "efficiency": 14, "tankCapacity": 42 },
+  { "name": "Yamaha Mio", "brand": "Yamaha", "model": "Mio", "type": "motorcycle", "fuelType": "Ron95", "efficiency": 55, "tankCapacity": 4.2 },
+  { "name": "Isuzu D-Max", "brand": "Isuzu", "model": "D-Max", "type": "truck", "fuelType": "Diesel", "efficiency": 12, "tankCapacity": 76 }
+]

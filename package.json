@@ -1,0 +1,35 @@
+{
+  "name": "smart-fuel-assistant-ph",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "scrape:tolls": "node scripts/scrape-tolls.mjs && node scripts/patch-toll-coords.mjs",
+    "patch:tolls": "node scripts/patch-toll-coords.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^1.48.0",
+    "@pinia/nuxt": "^0.9.0",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
+    "@vueuse/core": "^12.0.0",
+    "@vueuse/nuxt": "^12.0.0",
+    "chart.js": "^4.4.7",
+    "leaflet": "^1.9.4",
+    "nuxt": "^3.15.0",
+    "pinia": "^2.3.0",
+    "pinia-plugin-persistedstate": "^3.2.0",
+    "vue": "^3.5.0",
+    "vue-chartjs": "^5.3.2",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/leaflet": "^1.9.14",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.6.0"
+  }
+}
