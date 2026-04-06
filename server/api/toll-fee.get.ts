@@ -1,6 +1,7 @@
 import { lookupTollFeeById, getVehicleClass } from '../utils/tollData'
+import type { TollLookupResult } from '../utils/tollData'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler((event): TollLookupResult => {
   const q = getQuery(event)
   const entryId = Number(q.entryId)
   const exitId = Number(q.exitId)

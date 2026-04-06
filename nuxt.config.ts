@@ -10,13 +10,13 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   css: ['~/assets/css/main.css'],
-  modules: [
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-  ],
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', '@nuxt/scripts'],
   runtimeConfig: {
     geminiApiKey: '',
-    orsApiKey: '',
+    googleMapsApiKey: '',
+    public: {
+      googleMapsPublicKey: '',
+    },
   },
   app: {
     head: {

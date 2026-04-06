@@ -11,11 +11,12 @@ interface TollPoint {
 }
 
 interface TollRow {
-  id: number
   expressway: string
   entryId: number | null
   exitId: number | null
   fee: number | null
+  entryName: string
+  exitName: string
   loading: boolean
   notFound: boolean
 }
@@ -33,40 +34,14 @@ const expressways = ref<Record<string, string>>({})
 const tollPoints = ref<TollPoint[]>([])
 const dataLoaded = ref(false)
 const dataError = ref(false)
-let nextId = 0
 
 const vehicleClass = computed(() =>
   fuelStore.activeVehicle?.type === 'truck' ? 2 : 1,
 )
 
-const rows = ref<TollRow[]>([makeRow()])
-
-function makeRow(): TollRow {
-  return { id: nextId++, expressway: '', entryId: null, exitId: null, fee: null, loading: false, notFound: false }
-}
-
-const pointsByExpressway = computed(() => {
-  const map: Record<string, TollPoint[]> = {}
-  for (const p of tollPoints.value) {
-    if (!map[p.expressway]) map[p.expressway] = []
-    map[p.expressway].push(p)
-  }
-  return map
-})
-
-const expresswayList = computed(() =>
-  Object.entries(expressways.value).map(([id, name]) => ({ id, name })),
+const vehicleClassLabel = computed(() =>
+  vehicleClass.value === 2 ? 'Class 2 (truck)' : 'Class 1 (car/SUV)',
 )
-
-function pointsFor(expressway: string) {
-  return pointsByExpressway.value[expressway] ?? []
-}
-
-const totalFee = computed(() =>
-  rows.value.reduce((sum, r) => sum + (r.fee ?? 0), 0),
-)
-
-const hasAnyFee = computed(() => rows.value.some((r) => r.fee !== null))
 
 onMounted(async () => {
   try {
@@ -81,10 +56,44 @@ onMounted(async () => {
   }
 })
 
+function createRow(): TollRow {
+  return {
+    expressway: '',
+    entryId: null,
+    exitId: null,
+    fee: null,
+    entryName: '',
+    exitName: '',
+    loading: false,
+    notFound: false,
+  }
+}
+
+const rows = ref<TollRow[]>([createRow()])
+
+function addRow() {
+  rows.value.push(createRow())
+}
+
+function removeRow(index: number) {
+  rows.value.splice(index, 1)
+  emitToll()
+}
+
+function pointsForExpressway(expressway: string): TollPoint[] {
+  return tollPoints.value.filter((p) => p.expressway === expressway)
+}
+
+function exitPointsForRow(row: TollRow): TollPoint[] {
+  return pointsForExpressway(row.expressway).filter((p) => p.id !== row.entryId)
+}
+
 function onExpresswayChange(row: TollRow) {
   row.entryId = null
   row.exitId = null
   row.fee = null
+  row.entryName = ''
+  row.exitName = ''
   row.notFound = false
   emitToll()
 }
@@ -92,6 +101,8 @@ function onExpresswayChange(row: TollRow) {
 function onEntryChange(row: TollRow) {
   row.exitId = null
   row.fee = null
+  row.entryName = ''
+  row.exitName = ''
   row.notFound = false
   emitToll()
 }
@@ -100,64 +111,62 @@ async function onExitChange(row: TollRow) {
   row.fee = null
   row.notFound = false
 
-  if (!row.entryId || !row.exitId || row.entryId === row.exitId) {
+  if (!row.entryId || !row.exitId) {
     emitToll()
     return
   }
 
   row.loading = true
   try {
-    const result = await $fetch<{ fee: number; found: boolean }>('/api/toll-fee', {
+    const result = await $fetch<{
+      found: boolean
+      fee: number
+      entryName: string
+      exitName: string
+      expressway: string
+      expresswayName: string
+    }>('/api/toll-fee', {
       params: {
         entryId: row.entryId,
         exitId: row.exitId,
         vehicleClass: vehicleClass.value,
       },
     })
-    row.fee = result.found ? result.fee : 0
     row.notFound = !result.found
+    if (result.found) {
+      row.fee = result.fee
+      row.entryName = result.entryName
+      row.exitName = result.exitName
+    }
   } finally {
     row.loading = false
     emitToll()
   }
 }
 
-function addRow() {
-  rows.value.push(makeRow())
-}
-
-function removeRow(id: number) {
-  rows.value = rows.value.filter((r) => r.id !== id)
-  if (rows.value.length === 0) rows.value.push(makeRow())
-  emitToll()
-}
-
 function emitToll() {
-  const active = rows.value.filter((r) => r.fee !== null)
-
-  if (active.length === 0) {
+  const completedRows = rows.value.filter((r) => r.fee !== null)
+  if (completedRows.length === 0) {
     emit('update:toll', null)
     return
   }
 
-  const breakdown: TollBreakdownItem[] = active.map((r) => {
-    const entryPt = tollPoints.value.find((p) => p.id === r.entryId)
-    const exitPt = tollPoints.value.find((p) => p.id === r.exitId)
-    return {
-      entryPoint: entryPt?.name ?? '',
-      exitPoint: exitPt?.name ?? '',
-      expressway: r.expressway,
-      expresswayName: expressways.value[r.expressway] ?? r.expressway,
-      fee: r.fee!,
-    }
-  })
+  const totalFee = completedRows.reduce((sum, r) => sum + (r.fee ?? 0), 0)
 
-  const names = [...new Set(breakdown.map((b) => b.expresswayName))].join(' + ')
-  const classLabel = vehicleClass.value === 2 ? 'Class 2 (truck)' : 'Class 1 (car/SUV)'
+  const expresswayNames = [...new Set(completedRows.map((r) => expressways.value[r.expressway] ?? r.expressway))]
+  const routeLabel = expresswayNames.join(' + ')
+
+  const breakdown: TollBreakdownItem[] = completedRows.map((r) => ({
+    entryPoint: r.entryName,
+    exitPoint: r.exitName,
+    expressway: r.expressway,
+    expresswayName: expressways.value[r.expressway] ?? r.expressway,
+    fee: r.fee!,
+  }))
 
   emit('update:toll', {
-    estimatedToll: totalFee.value,
-    note: `Via ${names} — ${classLabel}`,
+    estimatedToll: totalFee,
+    note: `Via ${routeLabel} — ${vehicleClassLabel.value}`,
     exact: true,
     breakdown,
   })
@@ -181,7 +190,7 @@ function emitToll() {
     </p>
 
     <p class="text-xs text-gray-400">
-      Select the expressway and your entry/exit points to get the exact toll fee.
+      Select your expressway, then entry and exit points. Add a row for each expressway you'll use.
     </p>
 
     <div v-if="dataError" class="text-xs text-red-500">
@@ -193,13 +202,25 @@ function emitToll() {
     </div>
 
     <template v-else>
-      <!-- Toll rows -->
       <div
-        v-for="row in rows"
-        :key="row.id"
-        class="space-y-2 pb-3 border-b border-gray-100 dark:border-surface-700 last:border-0 last:pb-0"
+        v-for="(row, index) in rows"
+        :key="index"
+        class="space-y-3 pb-4 border-b border-gray-100 dark:border-surface-700 last:border-0 last:pb-0"
       >
-        <!-- Expressway selector -->
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-gray-400 uppercase">
+            {{ rows.length > 1 ? `Segment ${index + 1}` : 'Toll road' }}
+          </span>
+          <button
+            v-if="rows.length > 1"
+            class="text-xs text-red-400 hover:text-red-500"
+            @click="removeRow(index)"
+          >
+            Remove
+          </button>
+        </div>
+
+        <!-- Expressway -->
         <div>
           <label class="label">Expressway</label>
           <select
@@ -208,95 +229,79 @@ function emitToll() {
             @change="onExpresswayChange(row)"
           >
             <option value="">— Select expressway —</option>
-            <option v-for="e in expresswayList" :key="e.id" :value="e.id">
-              {{ e.name }}
+            <option v-for="(name, key) in expressways" :key="key" :value="key">
+              {{ name }}
             </option>
           </select>
         </div>
 
-        <!-- Entry / Exit selectors (shown once expressway selected) -->
+        <!-- Entry & exit (only when expressway selected) -->
         <template v-if="row.expressway">
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="label">Entry point</label>
-              <select
-                v-model="row.entryId"
-                class="input-field w-full"
-                @change="onEntryChange(row)"
-              >
-                <option :value="null">— Entry —</option>
-                <option
-                  v-for="p in pointsFor(row.expressway)"
-                  :key="p.id"
-                  :value="p.id"
-                >
-                  {{ p.name }}
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label class="label">Exit point</label>
-              <select
-                v-model="row.exitId"
-                class="input-field w-full"
-                :disabled="!row.entryId"
-                @change="onExitChange(row)"
-              >
-                <option :value="null">— Exit —</option>
-                <option
-                  v-for="p in pointsFor(row.expressway).filter((p) => p.id !== row.entryId)"
-                  :key="p.id"
-                  :value="p.id"
-                >
-                  {{ p.name }}
-                </option>
-              </select>
-            </div>
+          <div>
+            <label class="label">Entry point</label>
+            <select
+              v-model="row.entryId"
+              class="input-field w-full"
+              @change="onEntryChange(row)"
+            >
+              <option :value="null">— Select entry point —</option>
+              <option v-for="p in pointsForExpressway(row.expressway)" :key="p.id" :value="p.id">
+                {{ p.name }}
+              </option>
+            </select>
           </div>
 
-          <!-- Fee result row -->
-          <div class="flex items-center justify-between text-sm">
+          <div>
+            <label class="label">Exit point</label>
+            <select
+              v-model="row.exitId"
+              class="input-field w-full"
+              :disabled="!row.entryId"
+              @change="onExitChange(row)"
+            >
+              <option :value="null">— Select exit point —</option>
+              <option v-for="p in exitPointsForRow(row)" :key="p.id" :value="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Row result -->
+          <div class="text-sm min-h-[1.25rem]">
             <span v-if="row.loading" class="text-xs text-gray-400 animate-pulse">Looking up fee…</span>
             <span v-else-if="row.notFound" class="text-xs text-amber-500">
               No fee found for this pair — check toll.ph
             </span>
-            <span v-else-if="row.fee !== null" class="text-primary-600 dark:text-primary-400 font-semibold">
-              {{ settings.formatPeso(row.fee) }}
-            </span>
-            <span v-else class="text-xs text-gray-300 dark:text-gray-600">Select entry & exit</span>
-
-            <button
-              v-if="rows.length > 1"
-              class="text-xs text-gray-400 hover:text-red-500 transition-colors"
-              @click="removeRow(row.id)"
-            >
-              Remove
-            </button>
+            <div v-else-if="row.fee !== null" class="flex justify-between items-center">
+              <span class="text-xs text-gray-400">{{ row.entryName }} → {{ row.exitName }}</span>
+              <span class="font-semibold text-primary-600 dark:text-primary-400">
+                {{ settings.formatPeso(row.fee) }}
+              </span>
+            </div>
           </div>
         </template>
       </div>
 
-      <!-- Add row button -->
+      <!-- Add segment button -->
       <button
-        class="w-full text-sm text-primary-600 dark:text-primary-400 border border-dashed border-primary-300 dark:border-primary-700 rounded-xl py-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+        class="w-full text-xs text-primary-600 dark:text-primary-400 border border-dashed border-primary-300 dark:border-primary-700 rounded-lg py-2 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
         @click="addRow"
       >
         + Add another toll road
       </button>
 
-      <!-- Total -->
+      <!-- Grand total (when multiple rows have fees) -->
       <div
-        v-if="hasAnyFee"
-        class="flex justify-between items-center pt-1 border-t border-gray-100 dark:border-surface-700"
+        v-if="rows.filter(r => r.fee !== null).length > 1"
+        class="flex items-center justify-between border-t border-gray-100 dark:border-surface-700 pt-3"
       >
-        <span class="text-sm font-medium text-gray-500">Total toll</span>
+        <span class="text-xs text-gray-400">Total toll</span>
         <div class="flex items-center gap-2">
           <span class="text-xs bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 px-1.5 py-0.5 rounded-full">
             exact
           </span>
           <span class="font-bold text-primary-600 dark:text-primary-400">
-            {{ settings.formatPeso(totalFee) }}
+            {{ settings.formatPeso(rows.reduce((s, r) => s + (r.fee ?? 0), 0)) }}
           </span>
         </div>
       </div>

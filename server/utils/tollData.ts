@@ -40,6 +40,7 @@ function loadTollData(): TollData {
   return _data
 }
 
+
 export function getTollPoints(): TollPoint[] {
   return loadTollData().tollPoints
 }
