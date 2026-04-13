@@ -236,7 +236,7 @@ async function planRoute() {
       </div>
 
       <!-- Right column: map -->
-      <div class="flex-1 w-auto overflow-hidden">
+      <div class="w-full h-[400px] md:h-[500px] lg:h-[500px] overflow-hidden">
         <MapView
           :polyline="routePolyline"
           :speed-intervals="routeResult?.speedIntervals"
