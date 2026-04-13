@@ -63,8 +63,8 @@ function save() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-    <div class="bg-white dark:bg-surface-800 rounded-2xl w-full max-w-md p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+  <div class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 pb-24 sm:pb-4">
+    <div class="bg-white dark:bg-surface-800 rounded-2xl w-full max-w-md p-6 shadow-xl overflow-y-auto max-h-full">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-lg font-bold">{{ log ? 'Edit' : 'Add' }} Fuel Log</h2>
         <button class="text-gray-400 hover:text-gray-600 text-xl leading-none" @click="emit('close')">✕</button>
