@@ -251,5 +251,5 @@ async function planRoute() {
 <style scoped>
 @reference "~/assets/css/main.css";
 .label { @apply block text-xs font-semibold text-gray-400 uppercase mb-1; }
-.input-field { @apply border border-gray-200 dark:border-surface-600 dark:bg-surface-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500; }
+.input-field { @apply border border-gray-200 dark:border-surface-600 dark:bg-surface-700 rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-primary-500; }
 </style>
