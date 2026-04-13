@@ -35,6 +35,15 @@ export const useFuelStore = defineStore(
       if (!activeVehicleId.value) activeVehicleId.value = vehicle.id
     }
 
+    /** Remove a vehicle and all its associated fuel logs */
+    function deleteVehicle(id: string): void {
+      vehicles.value = vehicles.value.filter((v) => v.id !== id)
+      fuelLogs.value = fuelLogs.value.filter((l) => l.vehicleId !== id)
+      if (activeVehicleId.value === id) {
+        activeVehicleId.value = vehicles.value[0]?.id ?? ''
+      }
+    }
+
     /** Set the active vehicle */
     function setActiveVehicle(id: string): void {
       activeVehicleId.value = id
@@ -89,6 +98,7 @@ export const useFuelStore = defineStore(
       deleteFuelLog,
       updateFuelLog,
       addVehicle,
+      deleteVehicle,
       setActiveVehicle,
       getLastPrice,
       getMonthlySpend,

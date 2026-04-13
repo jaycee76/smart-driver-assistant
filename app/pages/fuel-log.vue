@@ -11,6 +11,7 @@ const showAddLog = ref(false)
 const showAddVehicle = ref(false)
 const editingLog = ref<FuelLog | null>(null)
 const pendingDeleteId = ref<string | null>(null)
+const pendingDeleteVehicleId = ref<string | null>(null)
 const filterVehicleId = ref('')
 const filterFuelType = ref<FuelType | ''>('')
 const filterMonth = ref(import.meta.client ? (() => {
@@ -55,6 +56,40 @@ function vehicleName(id: string): string {
       >
         + Add Fill-up
       </button>
+    </div>
+
+    <!-- Vehicles -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">My Vehicles</h2>
+        <button
+          class="text-xs text-primary-600 dark:text-primary-400 hover:underline font-medium"
+          @click="showAddVehicle = true"
+        >
+          + Add Vehicle
+        </button>
+      </div>
+      <div v-if="fuelStore.vehicles.length === 0" class="text-sm text-gray-400">
+        No vehicles added yet.
+      </div>
+      <div v-else class="flex flex-col gap-2">
+        <div
+          v-for="v in fuelStore.vehicles"
+          :key="v.id"
+          class="flex items-center justify-between bg-white dark:bg-surface-800 border border-gray-100 dark:border-surface-700 rounded-xl px-4 py-3"
+        >
+          <div>
+            <p class="text-sm font-medium">{{ v.name }} ({{ v.year }})</p>
+            <p class="text-xs text-gray-400">{{ v.efficiency }} km/L · {{ v.fuelType }}</p>
+          </div>
+          <button
+            class="text-xs text-red-400 hover:text-red-600 hover:underline ml-4 shrink-0"
+            @click="pendingDeleteVehicleId = v.id"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Filters -->
@@ -128,6 +163,13 @@ function vehicleName(id: string): string {
       message="This fill-up will be permanently removed from your log."
       @confirm="fuelStore.deleteFuelLog(pendingDeleteId!); pendingDeleteId = null"
       @cancel="pendingDeleteId = null"
+    />
+    <ConfirmDialog
+      v-if="pendingDeleteVehicleId"
+      title="Remove vehicle?"
+      :message="`This vehicle and all its fuel logs will be permanently deleted.`"
+      @confirm="fuelStore.deleteVehicle(pendingDeleteVehicleId!); pendingDeleteVehicleId = null"
+      @cancel="pendingDeleteVehicleId = null"
     />
   </div>
 </template>

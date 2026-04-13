@@ -10,6 +10,7 @@ const navItems = [
   { label: 'Calculator', to: '/calculator', icon: '🧮' },
   { label: 'Journey Planner', to: '/planner', icon: '🗺️' },
   { label: 'Insights', to: '/insights', icon: '💡' },
+  { label: 'Settings', to: '/settings', icon: '⚙️' },
 ]
 
 function toggleDark() {
