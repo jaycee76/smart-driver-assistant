@@ -75,7 +75,7 @@ function save() {
           <label class="label">Vehicle</label>
           <VehicleSelector v-model="form.vehicleId" />
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="label">Date</label>
             <input v-model="form.date" type="date" class="input-field w-full" />
